@@ -65,7 +65,9 @@ namespace ISeeDessert
             List<string> operands = new List<string>()
             {
                 "+",
-                "-"
+                "-",
+                "*",
+                "/"
             };
 
             if (!operands.Contains(operand))
@@ -80,6 +82,12 @@ namespace ISeeDessert
             else if (operand == "-")
             {
                 Subtract(x, y);
+            } else if (operand == "*")
+            {
+                Multiply(x, y);
+            } else if (operand == "/")
+            {
+                Divide(x, y);
             }
         }
 
@@ -93,6 +101,25 @@ namespace ISeeDessert
         {
             decimal result = (decimal)x - y;
             Console.WriteLine($"Result: {result}");
+        }
+
+        static void Multiply (decimal x, decimal y)
+        {
+            decimal result = (decimal)x * y;
+            Console.WriteLine($"Result: {result}");
+        }
+
+        static void Divide (decimal x, decimal y)
+        {
+            if (y == 0)
+            {
+                Console.WriteLine("Cannot Divide by 0");
+            } 
+            else
+            {
+                decimal result = (decimal)x / y;
+                Console.WriteLine($"Result: {result}");
+            }
         }
     }
 }
