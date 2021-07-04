@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ISeeDessert
 {
@@ -6,39 +7,44 @@ namespace ISeeDessert
     {
         static void Main(string[] args)
         {
-            decimal x = 0;
-            decimal y = 0;
+            Console.WriteLine("A Console Calculator");
+            Console.WriteLine("Enter what you would like to see added");
 
-            //First variable
-            Console.WriteLine("Enter a Number.");
-            var firstInput = Console.ReadLine();
-            if (Decimal.TryParse(firstInput, out x))
-            { } 
-            else 
-            { 
-                Console.WriteLine($"The first value, '{firstInput}', was not a number.");
+            string equation = Console.ReadLine();
+
+            DoMath(equation);
+        }
+
+        static void DoMath (string equation)
+        {
+            var equationParts = equation.Split(' ').ToList();
+            decimal x;
+            decimal y;
+
+            if (equationParts.Count() != 3)
+            {
+                Console.WriteLine("Invalid format.");
                 return;
             }
-
-            //Second variable
-            Console.WriteLine("Enter a second number, and I will add it to the first.");
-            string secondInput = Console.ReadLine();
-            if (Decimal.TryParse(secondInput, out y))
+            
+            if (Decimal.TryParse(equationParts.ElementAt(0), out x))
             { }
             else
             {
-                Console.WriteLine($"The second value, '{secondInput}', was not a number.");
+                Console.WriteLine($"The first value, {equationParts.ElementAt(0)}, is not a number.");
                 return;
             }
 
-            //Write answer
-            Add(x, y);
-        }
+            if (Decimal.TryParse(equationParts.ElementAt(2), out y))
+            { }
+            else
+            {
+                Console.WriteLine($"The second value, {equationParts.ElementAt(2)}, is not a number.");
+                return;
+            }
 
-        static void Add (decimal x, decimal y)
-        {
-            var result = (decimal)x + y;
-            Console.WriteLine($"result: {result}");
+            decimal answer = (decimal) x + y;
+            Console.WriteLine($"Result: {answer}");
         }
     }
 }
