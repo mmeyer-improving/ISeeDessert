@@ -8,15 +8,20 @@ namespace ISeeDessert
     {
         static void Main(string[] args)
         {
+            string equation;
             do
             {
                 Console.WriteLine("A Console Calculator");
                 Console.WriteLine("Enter what you would like to see added");
 
-                string equation = Console.ReadLine();
+                equation = Console.ReadLine();
 
+                if (equation == "exit")
+                {
+                    return;
+                }
                 ValidateFormat(equation);
-            } while (true);
+            } while (equation != "exit");
         }
 
         //Checks to see if both the first and last parts of the equation are numbers, then passes all parts on to validate the operand.
