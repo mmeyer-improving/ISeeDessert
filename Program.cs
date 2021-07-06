@@ -60,7 +60,7 @@ namespace ISeeDessert
         {
             if (equationParts.Count() != 3)
             {
-                Console.WriteLine("Invalid format.");
+                Console.WriteLine("An operation must be in the following format: '5 + 8'. Please try again.");
                 return false;
             }
             else
