@@ -8,16 +8,20 @@ namespace ISeeDessert
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("A Console Calculator");
-            Console.WriteLine("Enter what you would like to see added");
+            do
+            {
+                Console.WriteLine("A Console Calculator");
+                Console.WriteLine("Enter what you would like to see added");
 
-            string equation = Console.ReadLine();
+                string equation = Console.ReadLine();
 
-            ValidateFormat(equation);
+                ValidateFormat(equation);
+            } while (true);
         }
 
         //Checks to see if both the first and last parts of the equation are numbers, then passes all parts on to validate the operand.
-        //This feels kinda bad, but I can't figure out a nice way to refactor the number checks into another method. Don't think I can return null from a Decimal method, which would still result in this method being a mess of logic.
+        //This feels kinda bad, but I can't figure out a nice way to refactor the number checks into another method.
+        //Don't think I can return null from a Decimal method, which would still result in this method being a mess of logic.
         static void ValidateFormat (string equation)
         {
             var equationParts = equation.Split(' ').ToList();
@@ -72,7 +76,7 @@ namespace ISeeDessert
 
             if (!operands.Contains(operand))
             {
-                Console.WriteLine("Invalid Operand");
+                Console.WriteLine($"The Operation {operand} is invalid. Please use one of the following: + - * /");
                 return;
             }
             else if (operand == "+")
