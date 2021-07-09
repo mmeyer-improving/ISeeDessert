@@ -7,6 +7,12 @@ namespace ISeeDessert
     public class History
     {
         public decimal LastResult { get; set; }
+        public List<string> EquationHistory { get; set; }
+
+        public History()
+        {
+            EquationHistory = new List<string>();
+        }
     }
 
     class Program
@@ -26,12 +32,28 @@ namespace ISeeDessert
 
                 equation = Console.ReadLine();
 
+
                 if (equation == "exit")
                 {
                     return;
                 }
-                ValidateFormat(equation, ref history);
+                else if (equation == "history")
+                {
+                    DisplayHistory(history);
+                }
+                else
+                {
+                    ValidateFormat(equation, ref history);
+                }
             } while (equation != "exit");
+        }
+
+        static void DisplayHistory(History history)
+        {
+            foreach (string equation in history.EquationHistory)
+            {
+                Console.WriteLine($" {equation}");
+            }
         }
 
         //Checks to see if both the first and last parts of the equation are numbers, then passes all parts on to validate the operand.
@@ -110,6 +132,7 @@ namespace ISeeDessert
                 }
             }
 
+            history.EquationHistory.Add(equation);
             ChooseOperation(x, y, operand, ref history);
         }
 
