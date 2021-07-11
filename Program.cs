@@ -46,9 +46,9 @@ namespace ISeeDessert
                 {
                     return;
                 }
-                else if (equation == "history")
+                else if (equation.Contains("history"))
                 {
-                    DisplayHistory(history);
+                    DisplayHistory(history, equation);
                 }
                 else
                 {
@@ -58,8 +58,11 @@ namespace ISeeDessert
         }
 
         //Writes out the history
-        static void DisplayHistory(History history)
+        static void DisplayHistory(History history, string historyQuery)
         {
+            string desiredOperands = "+-*/";
+
+            //Can separate below lines into own method to return maxEquationWidth
             var maxEquationWidth = -1;
 
             foreach (string equation in history.EquationHistory)
@@ -74,24 +77,58 @@ namespace ISeeDessert
                 }
             }
 
+            //Can potentially separate this mess out, too, and just return the operand?
+            if (historyQuery != "history")
+            {
+                var queryParts = historyQuery.Split().ToList();
+                var operands = new List<string>() { 
+                "+",
+                "-",
+                "*",
+                "/"
+                };
+
+                if (queryParts.Count > 2)
+                {
+                    Console.WriteLine("Incorrect histry query format. It should look like this: 'history +'");
+                    return;
+                } 
+                else if (!(operands.Contains(queryParts.ElementAt(1)))) 
+                {
+                    Console.WriteLine("Incorrect histry query format. It should look like this: 'history +'");
+                    return;
+                } 
+                else 
+                {
+                    desiredOperands = queryParts.ElementAt(1);   
+                }
+            }
+
 
             foreach (string equation in history.EquationHistory)
             {
                 var equationParts = equation.Split(' ').ToList();
 
+                //can separate this out into a method too
                 if (equationParts.Count() == 4)
                 {
-                    var firstPart = $"{equationParts.ElementAt(0)} {equationParts.ElementAt(1)}";
-                    var firstPartWithSpacing = firstPart.PadRight(maxEquationWidth, ' ');
+                    if (desiredOperands.Contains(equationParts.ElementAt(0)))
+                    {
+                        var firstPart = $"{equationParts.ElementAt(0)} {equationParts.ElementAt(1)}";
+                        var firstPartWithSpacing = firstPart.PadRight(maxEquationWidth, ' ');
 
-                    Console.WriteLine(String.Format(" {0}  {1} {2}", firstPartWithSpacing, "=", equationParts.ElementAt(3)));
+                        Console.WriteLine(String.Format(" {0}  {1} {2}", firstPartWithSpacing, "=", equationParts.ElementAt(3)));
+                    }
                 } 
                 else 
                 {
-                    var firstPart = $"{equationParts.ElementAt(0)} {equationParts.ElementAt(1)} {equationParts.ElementAt(2)}";
-                    var firstPartWithSpacing = firstPart.PadRight(maxEquationWidth, ' ');
+                    if (desiredOperands.Contains(equationParts.ElementAt(1)))
+                    {
+                        var firstPart = $"{equationParts.ElementAt(0)} {equationParts.ElementAt(1)} {equationParts.ElementAt(2)}";
+                        var firstPartWithSpacing = firstPart.PadRight(maxEquationWidth, ' ');
 
-                    Console.WriteLine(String.Format(" {0}  {1} {2}", firstPartWithSpacing, "=", equationParts.ElementAt(4)));
+                        Console.WriteLine(String.Format(" {0}  {1} {2}", firstPartWithSpacing, "=", equationParts.ElementAt(4)));
+                    }
                 }
             }
         }
