@@ -60,6 +60,20 @@ namespace ISeeDessert
         //Writes out the history
         static void DisplayHistory(History history)
         {
+            var maxEquationWidth = -1;
+
+            foreach (string equation in history.EquationHistory)
+            {
+                var equationParts = equation.Split(' ').ToList();
+
+                string firstPart = equationParts.ElementAt(0) + " _ " + equationParts.ElementAt(2);
+
+                if (firstPart.Length > maxEquationWidth)
+                {
+                    maxEquationWidth = firstPart.Length;
+                }
+            }
+
 
             foreach (string equation in history.EquationHistory)
             {
@@ -67,11 +81,17 @@ namespace ISeeDessert
 
                 if (equationParts.Count() == 4)
                 {
-                    Console.WriteLine(String.Format(" {0} {1} {2} {3}", equationParts.ToArray()));
+                    var firstPart = $"{equationParts.ElementAt(0)} {equationParts.ElementAt(1)}";
+                    var firstPartWithSpacing = firstPart.PadRight(maxEquationWidth, ' ');
+
+                    Console.WriteLine(String.Format(" {0}  {1} {2}", firstPartWithSpacing, "=", equationParts.ElementAt(3)));
                 } 
                 else 
                 {
-                    Console.WriteLine(String.Format(" {0} {1} {2} {3} {4}", equationParts.ToArray()));
+                    var firstPart = $"{equationParts.ElementAt(0)} {equationParts.ElementAt(1)} {equationParts.ElementAt(2)}";
+                    var firstPartWithSpacing = firstPart.PadRight(maxEquationWidth, ' ');
+
+                    Console.WriteLine(String.Format(" {0}  {1} {2}", firstPartWithSpacing, "=", equationParts.ElementAt(4)));
                 }
             }
         }
