@@ -19,6 +19,15 @@ namespace ISeeDessert
     {
         
 
+        //TODO: Currently only the equation typed in is saved, need to save the equation **and** the result.
+        //This is only a problem in a case like '+ 8' where just trying to save it at the end doesn't work
+        //The way I have it set up, the equation is currently complete at that point. It doesn't know that it was ever was relying on history.LastResult
+        //So first fix that, and in the process maybe save the equation as a list of parts, i.e. ["8", "+", "7", "=", "15"]. List<List<String>>
+        //Might make the formatting history thing you do AFTER fixing this more sane.
+        //That said, MAKE IT WORK FIRST AND FOREMOST!! DO NOT get stuck trying to make it perfect. Working and crappy is the Jr. Dev's signature
+        //Will have a chance to do it better next week.
+
+
         static void Main(string[] args)
         {
             History history = new History();
@@ -48,41 +57,33 @@ namespace ISeeDessert
             } while (equation != "exit");
         }
 
+        //Writes out the history
         static void DisplayHistory(History history)
         {
+
             foreach (string equation in history.EquationHistory)
             {
-                Console.WriteLine($" {equation}");
+                var equationParts = equation.Split(' ').ToList();
+
+                if (equationParts.Count() == 4)
+                {
+                    Console.WriteLine(String.Format(" {0} {1} {2} {3}", equationParts.ToArray()));
+                } 
+                else 
+                {
+                    Console.WriteLine(String.Format(" {0} {1} {2} {3} {4}", equationParts.ToArray()));
+                }
             }
         }
 
-        //Checks to see if both the first and last parts of the equation are numbers, then passes all parts on to validate the operand.
+        //Checks to see if equation has 1 or 2 parts, then validates parts based on that. 
         //This feels kinda bad, but I can't figure out a nice way to refactor the number checks into another method.
-        //Don't think I can return null from a Decimal method, which would still result in this method being a mess of logic.
         static void ValidateFormat (string equation, ref History history)
         {
             var equationParts = equation.Split(' ').ToList();
             decimal x;
             decimal y;
             string operand;
-
-
-
-
-            //TODO: Check to see if operand has 3 parts (simple count check in this function on size of equationParts
-            // If it has 3 pieces, proceed as listed below
-            // else, if it has two pieces, check if first piece is valid operand
-            // if that passes, move onto next stage with history.LastResult as the decimal x
-
-
-            if (equationParts.Count == 3) 
-            { 
-
-            }
-
-
-
-
 
             if (!ValidateParts(equationParts)) 
             {
@@ -132,8 +133,7 @@ namespace ISeeDessert
                 }
             }
 
-            history.EquationHistory.Add(equation);
-            ChooseOperation(x, y, operand, ref history);
+            ChooseOperation(x, y, operand, ref history, equation);
         }
 
 
@@ -172,46 +172,49 @@ namespace ISeeDessert
             }
         }
 
-        static void ChooseOperation(decimal x, decimal y, string operand, ref History history)
+        static void ChooseOperation(decimal x, decimal y, string operand, ref History history, string equation)
         {
             if (operand == "+")
             {
-                Add(x, y, ref history);
+                Add(x, y, ref history, equation);
             }
             else if (operand == "-")
             {
-                Subtract(x, y, ref history);
+                Subtract(x, y, ref history, equation);
             } else if (operand == "*")
             {
-                Multiply(x, y, ref history);
+                Multiply(x, y, ref history, equation);
             } else if (operand == "/")
             {
-                Divide(x, y, ref history); ;
+                Divide(x, y, ref history, equation); ;
             }
         }
 
-        static void Add(decimal x, decimal y, ref History history)
+        static void Add(decimal x, decimal y, ref History history, string equation)
         {
             decimal additionResult = (decimal)x + y;
             history.LastResult = additionResult;
+            history.EquationHistory.Add($"{equation} = {additionResult}");
             Console.WriteLine($"Result: {additionResult}");
         }
 
-        static void Subtract(decimal x, decimal y, ref History history)
+        static void Subtract(decimal x, decimal y, ref History history, string equation)
         {
             decimal subtractionResult = (decimal)x - y;
             history.LastResult = subtractionResult;
+            history.EquationHistory.Add($"{equation} = {subtractionResult}");
             Console.WriteLine($"Result: {subtractionResult}");
         }
 
-        static void Multiply (decimal x, decimal y, ref History history)
+        static void Multiply (decimal x, decimal y, ref History history, string equation)
         {
             decimal multiplicationResult = (decimal)x * y;
             history.LastResult = multiplicationResult;
+            history.EquationHistory.Add($"{equation} = {multiplicationResult}");
             Console.WriteLine($"Result: {multiplicationResult}");
         }
 
-        static void Divide (decimal x, decimal y, ref History history)
+        static void Divide (decimal x, decimal y, ref History history, string equation)
         {
             if (y == 0)
             {
@@ -221,6 +224,7 @@ namespace ISeeDessert
             {
                 decimal divisionResult = (decimal)x / y;
                 history.LastResult = divisionResult;
+                history.EquationHistory.Add($"{equation} = {divisionResult}");
                 Console.WriteLine($"Result: {divisionResult}");
             }
         }
